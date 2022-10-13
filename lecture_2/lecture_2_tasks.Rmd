@@ -1,0 +1,53 @@
+---
+title: "Lecture II - tasks"
+author: "Dr Nicolaas Puts and Dr Lucas França"
+date: "10/10/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+1. Create a 'character' vector with the months of the year and show the current month by accessing it via index number.
+
+```{r}
+
+```
+
+2. Create a numeric vector ranging from 1 to 10000.
+
+```{r}
+
+```
+
+3. Create a numeric vector containing even numbers between 1 and 10000. Hint: Use function seq().
+
+```{r}
+
+```
+
+4. Create a tibble for a group of students showing their names, age (ranging from 19 to 25), country of birth and whether they had their Covid-19 vaccine. (just make the data up. The idea here is to practise manual tibbles creation).
+
+```{r}
+
+```
+
+5. A lab colleague warned you that students' age actually range from 21 to 25. Looking back at the tibble you just created in task 4, is there any course of action necessary? Hint: Replace any invalid number with NA and report them.
+
+```{r}
+
+```
+
+6. After cleaning the data and reporting input errors, obtain mean and standard deviation for student ages.
+
+```{r}
+
+```
+
+7. Load the dataset available in 'https://raw.githubusercontent.com/HeJasonL/BIG-TAC/main/TutorialData.csv' and obtain the 95% CI for age.
+
+```{r}
+
+```
+

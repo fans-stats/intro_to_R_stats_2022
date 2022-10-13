@@ -1,0 +1,21 @@
+---
+title: 'Lecture 3 - tasks'
+author: "Dr Nicolaas Puts and Dr Lucas França"
+date: "17 October 2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+1. Create a vector and perform a few operations using pipe (%>%).
+
+- For the dataset available in https://raw.githubusercontent.com/HeJasonL/BIG-TAC/main/TutorialData.csv.
+
+2.  Filter for female-only participants and obtain descriptive statistics for GABA and Sensory1 variables.
+
+3. Obtain mean and standard deviation for Age, GABA and Sensory1 in each Group using summarise().
+
+4. From the output of the previous outputs, obtain the 95% CI using mutate().

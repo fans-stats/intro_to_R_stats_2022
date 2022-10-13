@@ -1,0 +1,240 @@
+---
+title: "Lecture 2 – Importing and handling data I"
+author: "Dr Nicolaas Puts and Dr Lucas França"
+date: "10 October 2022"
+output:
+  html_document:
+    df_print: paged
+  pdf_document: default
+---
+
+# Data types
+
+The R data types or classes are
+
+ - logical (or boolean)
+ - integer
+ - numeric
+ - complex
+ - character
+ - raw (we are not going to use this one in the course)
+
+## 1. Logical
+
+```{r}
+logic1 <- TRUE
+logic2 <- FALSE
+```
+
+
+## 2. Integer
+
+```{r}
+int1 <- 16
+int2 <- 8
+```
+
+
+## 3. Numeric
+
+```{r}
+num1 <- 3.5
+num <- 6.1
+```
+
+
+## 4. Complex
+
+```{r}
+comp1 <- 2 + 5i
+```
+
+
+## 5. Character
+
+```{r}
+fruit <- "Apple and Banana"
+```
+
+
+## 6. Raw
+
+```{r}
+raw_ <- charToRaw("Apple")
+```
+
+
+
+# Data structure
+
+## String
+
+```{r}
+fruit1 <- "Apple"
+fruit2 <- "Banana"
+fruit3 <- "Grapes"
+
+nchar(fruit1)
+
+paste(fruit1, fruit2, fruit3)
+```
+```{r}
+fruit1 == fruit1
+```
+
+
+## Vectors
+
+```{r}
+
+fruits_vec <- c("Apple", "Banana", "Grapes")
+fruits_vec[2]
+```
+```{r}
+fruits_vec2 <- c(fruit1, fruit2, fruit3)
+fruits_vec2
+```
+
+```{r}
+num_vec <- c(1,5,6,7,2,3,5)
+```
+
+```{r}
+seq_vec <- c(1:12)
+seq_vec
+```
+
+
+## Matrix
+
+```{r}
+matrix1 <- matrix(c(1:6), nrow = 2, ncol = 3, byrow = TRUE)
+matrix1
+```
+
+```{r}
+matrix1[1,2]
+```
+
+```{r}
+matrix1[1,]
+```
+```{r}
+matrix1[,3]
+```
+
+
+## Arrays
+
+```{r}
+array1 <- array(c(1:12), dim = c(2,3,2))
+array1
+```
+
+
+## Dataframe
+
+```{r}
+dataframe1 <- data.frame(
+  Name = c("Anne", "Matthew", "Simon"),
+  Age = c(21, 18, 19),
+  Vote = c(TRUE, FALSE, TRUE)
+)
+
+dataframe1
+```
+
+```{r}
+table(dataframe1$Vote)
+```
+
+
+## Tibbles
+
+```{r}
+library(tidyverse)
+```
+
+```{r}
+tibble1 <- tibble(
+  Name = c("Anne", "Matthew", "Simon"),
+  Age = c(21, 18, 19),
+  Vote = c(TRUE, FALSE, TRUE)
+)
+```
+
+
+# Loading data
+
+## Loading csv
+
+```{r}
+urlfile <- 'https://raw.githubusercontent.com/HeJasonL/BIG-TAC/main/TutorialData.csv' 
+```
+
+```{r}
+dataset <- read.csv(urlfile)
+dataset
+```
+
+```{r}
+table(dataset$Sex)
+```
+
+
+## Loading SPSS
+
+```{r}
+library(foreign)
+```
+
+
+```{r}
+urlfile <- 'https://github.com/fans-stats/intro_to_R_stats/blob/main/datasets/researchers_sample.SAV?raw=true'
+```
+
+
+```{r}
+dataset2 <- read.spss(urlfile)
+dataset2 <- as.tibble(dataset2)
+dataset2
+```
+
+
+# A simple task
+
+There's a sample of 25 people where the mean height is 180 cm with an SD of 30. Use R to calculate the 95% CI and put the CI into a variable.
+
+```{r}
+LL <- 180 - 1.96 * (30/sqrt(25))
+UL <- 180 + 1.96 * (30/sqrt(25))
+
+CI <- c(LL, UL)
+CI
+```
+
+# Handling missing data
+
+```{r}
+dataset$Sensory1[37] <- NA
+```
+
+```{r}
+table(is.na(dataset$Sensory1))
+```
+
+```{r}
+min(dataset$Sensory1, na.rm = TRUE)
+```
+```{r}
+mean(dataset$Sensory1, na.rm = TRUE)
+```
+
+```{r}
+sd(dataset$Sensory1, na.rm = TRUE)
+```
+
+```{r}
+which(is.na(dataset$Sensory1))
+```
+

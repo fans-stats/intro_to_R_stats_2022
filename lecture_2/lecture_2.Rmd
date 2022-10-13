@@ -1,0 +1,169 @@
+---
+title: "Lecture 2 – Importing and handling data I"
+author: "Dr Nicolaas Puts and Dr Lucas França"
+date: "10 October 2022"
+output:
+  html_document:
+    df_print: paged
+  pdf_document: default
+---
+
+# Data types
+
+The R data types or classes are
+
+ - logical (or boolean)
+ - integer
+ - numeric
+ - complex
+ - character
+ - raw (we are not going to use this one in the course)
+
+## 1. Logical
+
+```{r}
+logic1 <- TRUE
+log2 <- FALSE
+```
+
+## 2. Intenger
+
+```{r}
+n <- 24
+```
+
+## 3. Numeric
+
+```{r}
+dist <- 3.5
+```
+
+## 4. Complex
+
+```{r}
+cmp <- 4+5i
+```
+
+## 5. Character
+
+```{r}
+fruit <- "Apple"
+```
+
+
+## 6. Raw
+
+```{r}
+raw_fruit <- charToRaw("Apple")
+```
+
+
+# Data structure
+
+## String
+
+```{r}
+fruits <- 'Apple and Banana'
+fruits2 <- 'and Grapes'
+nchar(fruits)
+
+paste(fruits, fruits2)
+```
+
+```{r}
+fruits == fruits2
+```
+
+```{r}
+fruits == fruits
+```
+
+
+## Vectors
+
+```{r}
+fruits_vec <- c('Apple', 'Banana', 'Grape')
+fruits_vec[1]
+fruits_vec[1] <- 'Orange'
+```
+
+## Matrix
+
+```{r}
+matrix1 <- matrix(c(1, 2, 3, 4, 5, 6), nrow = 2, ncol = 3, byrow = TRUE)
+matrix1[1,2]
+matrix1[,2]
+```
+## Arrays
+
+```{r}
+array1 <- array(c(1:12), dim = c(2,3,2))
+```
+
+## Dataframe
+
+```{r}
+dataframe1 <- data.frame(
+  Name = c("Anne", "Matthew", "Simon"),
+  Age = c(21, 18, 19),
+  Vote = c(TRUE, FALSE, TRUE)
+)
+```
+
+## Tibbles
+
+```{r}
+#install.packages("tidyverse")
+library(tidyverse)
+```
+
+```{r}
+tibble1 <- tibble(
+  Name = c("Anne", "Matthew", "Simon"),
+  Age = c(21, 18, 19),
+  Vote = c(TRUE, FALSE, TRUE)
+)
+```
+
+```{r}
+tibble1$Name
+```
+
+
+```{r}
+as_tibble(Dependent)
+```
+
+
+# Loading data
+
+## Loading csv
+
+```{r}
+urlfile <- 'https://raw.githubusercontent.com/HeJasonL/BIG-TAC/main/TutorialData.csv' #this loads a csv file called TutorialData and puts it into urlfile
+
+tutorial_data <-read.csv(urlfile) #this reads the csv file that we put in urlfile and makes a new ‘dataframe’ called tutorial_data
+```
+
+## Loading SPSS
+
+```{r}
+urlfile <- 'https://github.com/fans-stats/intro_to_R_stats/blob/main/datasets/researchers_sample.SAV?raw=true' #this loads a csv file called TutorialData and puts it into urlfile
+
+tutorial_data <- read.spss(urlfile) #this reads the csv file that we put in urlfile and makes a new ‘dataframe’ called tutorial_data
+tutorial_data <- as.tibble(tutorial_data)
+```
+
+# Handling missing data
+
+```{r}
+tutorial_data$id[1] <- NA
+```
+
+# A simple task
+
+There's a sample of 25 people where the mean height is 180 cm with an SD of 30. Use R to calculate the 95% CI and put the CI into a variable.
+
+```{r}
+CI <- c((180 - 1.96 * (30/sqrt(25))), (180 + 1.96 * (30/sqrt(25))))
+```

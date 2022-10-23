@@ -1,0 +1,67 @@
+---
+title: 'Lecture 3: Importing and handling data II'
+author: "Dr Nicolaas Puts and Dr Lucas França"
+date: "17 October 2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Functions and pipe operators
+
+Functions in R can be difficult to read. For example.
+
+
+
+Tidyverse packages introduced a novel approach to nest function:
+
+```{r}
+library(tidyverse)
+```
+
+
+
+# Filtering data
+
+First we load a dataset in a similar way we did last time:
+
+```{r}
+urlfile <- 'https://raw.githubusercontent.com/HeJasonL/BIG-TAC/main/TutorialData.csv' #this loads a csv file called TutorialData and puts it into urlfile
+
+data <- read.csv(urlfile) %>% 
+  as_tibble()
+```
+
+
+
+
+# Merging data (and filter)
+
+First we need to create two datasets 
+
+
+
+And we can merge those:
+
+
+
+# Summarising data and descriptives
+
+
+
+We need to use factors in this case.
+
+
+
+# The functions group_by() and summarise()
+
+
+
+
+
+# The function mutate()
+
+
+

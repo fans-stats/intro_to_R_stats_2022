@@ -1,0 +1,73 @@
+---
+title: "Lecture II - tasks"
+author: "Dr Nicolaas Puts and Dr Lucas França"
+date: "10/10/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+1. Create a 'character' vector with the months of the year and show the current month by accessing it via index number.
+
+```{r}
+year <- c('January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December')
+year[10]
+```
+
+2. Create a numeric vector ranging from 1 to 10000.
+
+```{r}
+big_vec <- 1:10000
+```
+
+3. Create a numeric vector containing even numbers between 1 and 10000. Hint: Use function seq().
+
+```{r}
+big_vec_even <- seq(2,10000,2)
+```
+
+4. Create a tibble for a group of students showing their names, age (ranging from 19 to 25), country of birth and whether they had their Covid-19 vaccine. (just make the data up. The idea here is to practise manual tibbles creation).
+
+```{r}
+student_tibble <- tibble(
+  Name = c("Anne", "Matthew", "Simon", "Jerry", "Grace", "Heather"),
+  Age = c(21, 18, 19, 22, 23, 24),
+  Country = c("UK", "Ireland", "France", "Belgium", "US", "Canada"),
+  Vaccine = c(TRUE, TRUE, TRUE, FALSE, FALSE, TRUE)
+)
+```
+
+5. A lab colleague warned you that students' age actually range from 21 to 25. Looking back at the tibble you just created in task 4, is there any course of action necessary? Hint: Replace any invalid number with NA and report them.
+
+```{r}
+student_tibble_cl <- student_tibble %>% 
+  mutate(Age = if_else(Age < 21, NA_real_, Age))
+```
+
+6. After cleaning the data and reporting input errors, obtain mean and standard deviation for student ages.
+
+```{r}
+mean(student_tibble_cl$Age, na.rm = TRUE)
+```
+
+```{r}
+sd(student_tibble_cl$Age, na.rm = TRUE)
+```
+
+7. Load the dataset available in 'https://raw.githubusercontent.com/HeJasonL/BIG-TAC/main/TutorialData.csv' and obtain the 95% CI for age.
+
+```{r}
+urlfile <- 'https://raw.githubusercontent.com/HeJasonL/BIG-TAC/main/TutorialData.csv'
+
+data <-read.csv(urlfile) %>% 
+  as_tibble()
+```
+
+```{r}
+CI <- c((mean(data$Age) - 1.96 * (sd(data$Age)/length(data$Age))), (mean(data$Age) + 1.96 * (sd(data$Age)/length(data$Age))))
+
+CI
+```
+

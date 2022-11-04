@@ -1,0 +1,30 @@
+---
+title: 'Lecture 6: Advanced concepts in R - tasks'
+author: "Dr Nicolaas Puts and Dr Lucas França"
+date: "07 November 2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(foreign)
+```
+
+
+1. Load the following dataset:
+
+```{r}
+urlfile <- 'https://raw.githubusercontent.com/HeJasonL/BIG-TAC/main/TutorialData.csv' #this loads a csv file called TutorialData and puts it into urlfile
+
+```
+
+
+2. Create a for loop and write strings with a sequence of even numbers.
+
+3. Create a function to obtain the 95% CI for GABA.
+
+4. Create a boxplot for GABA (in each Group) with stats.

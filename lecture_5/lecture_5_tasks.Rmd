@@ -1,0 +1,31 @@
+---
+title: 'Lecture 5: Comparing groups - tasks'
+author: "Dr Nicolaas Puts and Dr Lucas França"
+date: "07 November 2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(foreign)
+```
+
+
+1. Load the following dataset:
+
+```{r}
+urlfile <- 'https://raw.githubusercontent.com/HeJasonL/BIG-TAC/main/TutorialData.csv' #this loads a csv file called TutorialData and puts it into urlfile
+
+```
+
+2. Describe the following variables.
+
+3. Using the right test, test the hypothesis that ASD population features a reduced sensory score. 
+
+4. Using the right test, test whether there are between percentages of Sex per Group (ASD/TDC).
+
+5. Plot a box plot of GABA per Group.

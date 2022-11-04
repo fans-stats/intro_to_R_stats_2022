@@ -20,11 +20,7 @@ urlfile <- 'https://raw.githubusercontent.com/HeJasonL/BIG-TAC/main/TutorialData
 data <- read.csv(urlfile) %>% 
   as_tibble()
 ```
-4 - Basics of plotting in ggplot2
 
-- Plotting different types of graphs (bar, box, scatter)
-
-- Legends, and colours
 
 # Bar plots
 

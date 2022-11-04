@@ -1,0 +1,227 @@
+---
+title: 'Lecture 5: Comparing groups'
+author: "Dr Nicolaas Puts and Dr Lucas França"
+date: "07 November 2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(foreign)
+```
+
+# Load dataset
+
+```{r}
+url <- 'https://github.com/fans-stats/intro_to_R_stats/blob/main/datasets/researchers_sample.SAV?raw=true'
+data <- read.spss(url, to.data.frame=TRUE) %>% 
+  tibble::as_tibble()
+
+data
+```
+
+# Background:
+
+The dataset consists of a sample of $n$ = 500 researchers in the UK whose demographic characteristics and working details are being studied. In this dataset you may find the following variables:
+
+- age: exact age of the researchers (years)
+- sex: registered sex at birth (1: male, 2: female)
+- edu: highest degree the researchers hold (1: Bachelors, 2: Masters’, 3: PhD)
+- work: exact time spent at work on a typical day (hours)
+- meetings: exact time spent on meetings on a typical day (hours)
+- satisfaction: satisfaction with the work life balance (1: not at all satisfied, to 7: absolutely satisfied).
+
+# Check for typos
+
+```{r}
+data %>% 
+  ggplot(aes(x = age)) +
+    geom_histogram()
+```
+
+```{r}
+data %>% 
+  ggplot(aes(x = work)) +
+    geom_histogram()
+```
+
+```{r}
+data %>% 
+  ggplot(aes(x = age, y = work)) +
+    geom_point()
+```
+
+```{r}
+summary(data)
+```
+
+```{r}
+# Remove typos
+data$age[data$id==4] <- NA
+data$work[data$id==54] <- NA
+data$satisfaction[data$id==72] <- NA
+```
+
+```{r}
+summary(data)
+```
+
+## Single sample t-test
+
+Use the appropriate command to test if the average hours that researchers spend at work is 7 hours.
+
+```{r}
+t.test(data$work, mu = 7.00)
+```
+## Chi-squared
+
+```{r}
+chisq.test(table(data$sex))
+```
+
+# Load dataset
+
+```{r}
+url <- 'https://github.com/fans-stats/intro_to_R_stats/blob/main/datasets/children_nutrition.SAV?raw=true'
+
+dataset <- read.spss(file = url, to.data.frame = TRUE) %>% 
+  tibble::as_tibble()
+
+dataset
+```
+
+The data set consists of a sample of n = 500 school children. A research team was interested in measuring the average height of children leaving in an urban area and children leaving in a rural area. In the dataset you will find the following variables:
+
+ethnicity: children’s ethnicity (1: White, 2: Black, 3: Asian, 4: Other)
+area: classification of the area the children live in (1: Rural and 0: Urban)
+Height2014: children’s height as measured in 2014.
+Height2018: children’s height as measured in 2018.
+nutrition2014: a classification of the quality of children’s nutrition by the research team (based on appropriate parameters, interviews and observation) made in 2014 (1: bad, 2: average, 3: good).
+nutrition2018: a classification of the quality of children’s nutrition by the research team (based on appropriate parameters, interviews and observation) made in 2018 (1: bad, 2: average, 3: good).
+
+- Checking distribution:
+
+```{r}
+dataset %>% 
+  ggplot(aes(x = Height2014)) + 
+    geom_histogram(aes(fill = Area)) + 
+    theme_bw()
+```
+
+```{r}
+library(car) # Please remember to install the package first
+```
+
+
+```{r}
+# We are first going to compute Levene's test
+
+leveneTest(Height2014 ~ Area, data = dataset, center = mean)
+```
+The Levene’s test outcome suggests that there is NOT statistically significant difference between the variances of both distributions. Hence we can perform an independent samples t-test considering that aspect.
+
+```{r}
+t.test(formula =Height2014 ~ Area, data = dataset, var.equal = TRUE)
+```
+
+The mean height in 2014 was 144.8cm in urban areas and 147.0cm in rural areas. This difference was significant (t=-13.058, df=498, p<0.001; 95% CI:−2.59,−1.91; equal variances assumed). Therefore, we infer that, in 2014, the children who lived in rural areas were on average taller that those who lived in urban areas.
+
+Now we will use the appropriate test to see if there are statistically significant differences between the percentages of each ethnicity per area.
+
+```{r}
+CrossTable(dataset$Ethnicity, dataset$Area,
+           format=c("SPSS"),
+           prop.r = FALSE,
+           prop.t = FALSE,
+           prop.chisq=FALSE)
+```
+
+```{r}
+chisq.test(xtabs(formula = ~ Ethnicity + Area, data = dataset))
+```
+
+There was no association between the ethnicity and area (Pearson’s chi-square = 1.400, df = 3, p = 0.706).
+
+# Load dataset
+
+```{r}
+url <- 'https://github.com/fans-stats/intro_to_R_stats/blob/main/datasets/postgraduate_dataset.SAV?raw=true'
+dataset <- read.spss(file = url, to.data.frame = TRUE) %>% 
+  tibble::as_tibble()
+
+dataset
+```
+
+The data set consists of a sample of n = 154 students attending three postgraduate programmes (affective disorders AF, clinical neuropsychiatry CN, and mental health studies MH), at the IoPPN in 2017. In this dataset you will find the following variables:
+
+
+
+programme: the programme the students were attending (1: AF, 2:CN, 3:MH)
+group: the teaching group (1: AF and CN, 2: MH)
+anx: the scores on the ‘anxiety related to statistics’ scale, which the students completed during the first week of Term 1.
+catgrade: the ability category (with respect to statistics) at which each student belonged at the beginning of the term, based on the Prior Knowledge Quiz(1: Low, 2: Sufficient, 3: Good, 4: High).
+quiz1: the grades on the practical quiz 1, which the students completed on KEATS.
+quiz2: the grades on the practical quiz 2, which the students completed on KEATS.
+
+Now we will use a statistical test to see if there are statistically significant differences between the two teaching groups (AD&CN and MH) in the percentages of students belonging to each of the ‘prior knowledge’ categories (low, sufficient, good, high). Report on the results.
+
+```{r}
+CrossTable(dataset$catgrade,
+           dataset$group,
+           format=c("SPSS"),
+           prop.r = FALSE,
+           prop.t = FALSE,
+           prop.chisq=FALSE)
+```
+
+```{r}
+chisq.test(xtabs(formula = ~ catgrade + group, data = dataset))
+```
+
+```{r}
+fisher.test(dataset$catgrade,dataset$group)# This performs Fisher's exact test
+```
+For two independent groups, the appropriate test is Pearson’s chi square, provided the assumptions of the test hold. However, the assumptions did not hold, so we report instead on the Fisher’s exact test.
+
+The was no association between the group membership and the level of prior knowledge in statistics (Fisher’s exact test p = 0.393).
+
+
+Now we will use a statistical test to see if there are statistically significant differences between the student’s results on Progress Quiz 1 and Progress Quiz 2.
+
+
+```{r}
+dataset <- dataset %>% 
+  mutate(quizdiff = quiz2 - quiz1)
+```
+
+We will perform the Wilcoxon signed rank test.
+
+```{r}
+wx_test <- wilcox.test(dataset$quiz1,
+                       dataset$quiz2,
+                       paired = TRUE)
+wx_test
+```
+
+Differently from SPSS, R does not provide the Standardised Test Statistic. This needs to be computed separately as follows:
+
+```{r}
+Zstat <- qnorm(wx_test$p.value/2)
+Zstat
+```
+
+We will now verify whether there were statistically significant differences between the two teaching groups with respect to their performance in the progress quizzes.
+
+```{r}
+wilcox.test(dataset$quiz1~dataset$group)
+```
+
+```{r}
+wilcox.test(dataset$quiz2~dataset$group)
+```
+
+There were no statistically significant differences in progress quiz scores between the two groups, according to the Mann-Whitney U test (Quiz 1: U = 2515.5, p = 0.685; Quiz 2: U = 1504, p = 0.991).

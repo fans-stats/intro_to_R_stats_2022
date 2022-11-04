@@ -1,0 +1,184 @@
+---
+title: 'Lecture 6: Advanced concepts in R'
+author: "Dr Nicolaas Puts and Dr Lucas França"
+date: "14 November 2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(foreign)
+```
+
+# Load dataset
+
+```{r}
+url <- 'https://github.com/fans-stats/intro_to_R_stats/blob/main/datasets/researchers_sample.SAV?raw=true'
+data <- read.spss(url, to.data.frame=TRUE) %>% 
+  tibble::as_tibble()
+
+data
+```
+
+# For loops
+
+```{r}
+for (i in 1:10){
+  print(i)
+}
+```
+```{r}
+for (i in 1:10){
+  print(paste0('This is element #',i))
+}
+```
+```{r}
+vector <- c()
+
+for (i in 1:10){
+  vector[i] <- paste0('This is element #',i)
+}
+
+vector
+```
+# Functions
+
+```{r}
+myFunc <- function(x){
+  
+  y <- x^2 + 2*x
+  return(y)
+} 
+```
+
+```{r}
+myFunc(1:4)
+```
+# ggarrange and publication-ready figures
+
+```{r}
+library(ggpubr)
+```
+
+```{r}
+library(paletteer)
+```
+
+```{r}
+bxp <- data %>% 
+  
+  ggplot(aes(y = Sensory1,
+             x = Group)) +
+  geom_boxplot(aes(color = Group, 
+                   fill = Group), 
+               width = 0.5, 
+               alpha = 0.3, 
+               outlier.shape = NA) + 
+  ggforce::geom_sina(aes(fill = Group, 
+                         colour = Group), 
+                size = 3, 
+                pch = 21, 
+                alpha = 0.4, 
+                maxwidth = .5) + 
+  theme_bw() +
+  xlab("Group") +
+  ylab("Sensory Scores") +
+  ggtitle("Sensory Scores by group") +
+  theme(plot.title = element_text(hjust = 0.5), 
+        text = element_text(size = 24), 
+        legend.position = c(0.9,0.9), 
+        legend.title = element_blank(), 
+        legend.background = element_blank()) + 
+  scale_fill_paletteer_d("MetBrewer::Juarez") + 
+  scale_colour_paletteer_d("MetBrewer::Juarez")
+```
+
+```{r}
+dots <- data %>% 
+  
+  ggplot(aes(y = Sensory1,
+             x = Group)) +
+  ggforce::geom_sina(aes(fill = Group, 
+                         colour = Group), 
+                size = 3, 
+                pch = 21, 
+                alpha = 0.4, 
+                maxwidth = .5) + 
+  theme_bw() +
+  xlab("Group") +
+  ylab("Sensory Scores") +
+  ggtitle("Sensory Scores by group") +
+  theme(plot.title = element_text(hjust = 0.5), 
+        text = element_text(size = 24), 
+        legend.position = c(0.9,0.9), 
+        legend.title = element_blank(), 
+        legend.background = element_blank()) + 
+  scale_fill_paletteer_d("MetBrewer::Juarez") + 
+  scale_colour_paletteer_d("MetBrewer::Juarez")
+```
+
+```{r}
+scatter <- data %>% 
+  
+  ggplot(aes(y = Sensory1,
+             x = GABA)) +
+  geom_point(aes(fill = Group, 
+                         colour = Group), 
+                size = 3, 
+                pch = 21, 
+                alpha = 0.4, 
+                maxwidth = .5) + 
+  theme_bw() +
+  xlab("GABA") +
+  ylab("Sensory Scores") +
+  ggtitle("Sensory Scores by group") +
+  theme(plot.title = element_text(hjust = 0.5), 
+        text = element_text(size = 24), 
+        legend.position = c(0.9,0.9), 
+        legend.title = element_blank(), 
+        legend.background = element_blank()) + 
+  scale_fill_paletteer_d("MetBrewer::Juarez") + 
+  scale_colour_paletteer_d("MetBrewer::Juarez")
+```
+
+
+```{r}
+ggpubr::ggarrange(bxp, dots, scatter, ncol = 2, nrow = 2)
+```
+
+# Adding stats to your plots
+
+```{r}
+data %>% 
+  
+  ggplot(aes(y = Sensory1,
+             x = Group)) +
+  geom_boxplot(aes(color = Group, 
+                   fill = Group), 
+               width = 0.5, 
+               alpha = 0.3, 
+               outlier.shape = NA) + 
+  ggforce::geom_sina(aes(fill = Group, 
+                         colour = Group), 
+                size = 3, 
+                pch = 21, 
+                alpha = 0.4, 
+                maxwidth = .5) + 
+  theme_bw() +
+  xlab("Group") +
+  ylab("Sensory Scores") +
+  ggtitle("Sensory Scores by group") +
+  theme(plot.title = element_text(hjust = 0.5), 
+        text = element_text(size = 24), 
+        legend.position = c(0.9,0.9), 
+        legend.title = element_blank(), 
+        legend.background = element_blank()) + 
+  scale_fill_paletteer_d("MetBrewer::Juarez") + 
+  scale_colour_paletteer_d("MetBrewer::Juarez") + 
+  
+  ggpubr::stat_compare_means(method = 't.test')
+```

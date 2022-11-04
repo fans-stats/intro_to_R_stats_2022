@@ -1,0 +1,229 @@
+---
+title: 'Lecture 4: Basics of plotting in ggplot2'
+author: "Dr Nicolaas Puts and Dr Lucas França"
+date: "24 October 2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+```
+
+# Load dataset
+
+```{r}
+urlfile <- 'https://raw.githubusercontent.com/HeJasonL/BIG-TAC/main/TutorialData.csv' #this loads a csv file called TutorialData and puts it into urlfile
+
+data <- read.csv(urlfile) %>% 
+  as_tibble()
+```
+
+
+# Bar plots
+
+```{r}
+data %>% 
+  
+  ggplot(aes(x = GABA)) + 
+  geom_histogram(binwidth = 0.5)
+```
+
+```{r}
+data %>% 
+  
+  ggplot(aes(x = GABA)) + 
+  geom_histogram(aes(fill = Group), binwidth = 0.5)
+```
+
+# Boxplot
+
+```{r}
+data %>% 
+  
+  ggplot(aes(x = Group,
+             y = Sensory1)) +
+  geom_boxplot()
+```
+
+```{r}
+data %>% 
+  
+  ggplot(aes(x = Group,
+             y = Sensory1)) +
+  geom_boxplot(aes(fill = Group))
+```
+
+# Scatter plots
+
+```{r}
+data %>% 
+  
+  ggplot(aes(x = Age,
+             y = Sensory1)) + 
+  geom_point()
+```
+
+```{r}
+data %>% 
+  
+  ggplot(aes(x = Age,
+             y = Sensory1)) + 
+  geom_point(aes(colour = Group))
+```
+
+
+# Transparency
+
+```{r}
+data %>% 
+  
+  ggplot(aes(x = GABA)) + 
+  geom_histogram(aes(fill = Group), binwidth = 0.5, alpha = 0.6)
+```
+
+# Titles, themes, and labels
+
+```{r}
+data %>% 
+  ggplot(aes(x = Group, 
+             y = Sensory1)) + 
+  geom_boxplot(aes(fill = Group)) + 
+  theme_bw() + 
+  xlab("Group") + 
+  ylab("Sensory Scores") + 
+  ggtitle("Sensory Scores by group") + 
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+
+# Stacking plots
+
+```{r}
+library(ggforce)
+```
+
+```{r}
+data %>% 
+  ggplot(aes(x = Group, 
+             y = Sensory1)) + 
+  geom_boxplot(aes(fill = Group)) + 
+  ggforce::geom_sina() +
+  
+  theme_bw() + 
+  xlab("Group") + 
+  ylab("Sensory Scores") + 
+  ggtitle("Sensory Scores by group") + 
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+
+Now let's make a publication-ready beautiful plot
+
+# Colours!!
+
+```{r}
+library(paletteer)
+```
+
+```{r}
+data %>% 
+  ggplot(aes(x = Group, 
+             y = Sensory1)) + 
+  geom_boxplot(aes(fill = Group)) + 
+  ggforce::geom_sina() +
+  
+  theme_bw() + 
+  xlab("Group") + 
+  ylab("Sensory Scores") + 
+  ggtitle("Sensory Scores by group") + 
+  theme(plot.title = element_text(hjust = 0.5)) + 
+  scale_fill_paletteer_d("MetBrewer::Juarez")
+```
+
+```{r}
+data %>% 
+  ggplot(aes(x = Group, 
+             y = Sensory1)) + 
+  geom_boxplot(aes(fill = Group, 
+                   colour = Group), 
+               alpha = 0.3, 
+               outlier.shape = NA) + 
+  ggforce::geom_sina(aes(colour = Group, 
+                         fill = Group), 
+                     size = 3,
+                     pch = 21, 
+                     alpha = 0.4, 
+                     max_width = 0.5) +
+  
+  theme_bw() + 
+  xlab("Group") + 
+  ylab("Sensory Scores") + 
+  ggtitle("Sensory Scores by group") + 
+  theme(plot.title = element_text(hjust = 0.5), 
+        text = element_text(size = 24)) + 
+  
+  scale_fill_paletteer_d("MetBrewer::Juarez") + 
+  scale_colour_paletteer_d("MetBrewer::Juarez")
+```
+
+# Legends
+
+```{r}
+data %>% 
+  ggplot(aes(x = Group, 
+             y = Sensory1)) + 
+  geom_boxplot(aes(fill = Group, 
+                   colour = Group), 
+               alpha = 0.3, 
+               outlier.shape = NA) + 
+  ggforce::geom_sina(aes(colour = Group, 
+                         fill = Group), 
+                     size = 3,
+                     pch = 21, 
+                     alpha = 0.4, 
+                     max_width = 0.5) +
+  
+  theme_bw() + 
+  xlab("Group") + 
+  ylab("Sensory Scores") + 
+  ggtitle("Sensory Scores by group") + 
+  theme(plot.title = element_text(hjust = 0.5), 
+        text = element_text(size = 24), 
+        legend.position = "none") + 
+  
+  scale_fill_paletteer_d("MetBrewer::Juarez") + 
+  scale_colour_paletteer_d("MetBrewer::Juarez")
+```
+
+```{r}
+data %>% 
+  ggplot(aes(x = Group, 
+             y = Sensory1)) + 
+  geom_boxplot(aes(fill = Group, 
+                   colour = Group), 
+               alpha = 0.3, 
+               outlier.shape = NA) + 
+  ggforce::geom_sina(aes(colour = Group, 
+                         fill = Group), 
+                     size = 3,
+                     pch = 21, 
+                     alpha = 0.4, 
+                     max_width = 0.5) +
+  
+  theme_bw() + 
+  xlab("Group") + 
+  ylab("Sensory Scores") + 
+  ggtitle("Sensory Scores by group") + 
+  theme(plot.title = element_text(hjust = 0.5), 
+        text = element_text(size = 24), 
+        legend.position = c(0.1, 0.9), 
+        legend.title = element_blank(),
+        legend.background = element_blank()) + 
+  
+  scale_fill_paletteer_d("MetBrewer::Juarez") + 
+  scale_colour_paletteer_d("MetBrewer::Juarez")
+```

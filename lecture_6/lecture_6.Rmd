@@ -10,6 +10,8 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ```{r}
+# install.packages("tidyverse")
+
 library(tidyverse)
 library(foreign)
 ```
@@ -17,12 +19,20 @@ library(foreign)
 # Load dataset
 
 ```{r}
-url <- 'https://github.com/fans-stats/intro_to_R_stats/blob/main/datasets/researchers_sample.SAV?raw=true'
-data <- read.spss(url, to.data.frame=TRUE) %>% 
+urlfile <- 'https://raw.githubusercontent.com/HeJasonL/BIG-TAC/main/TutorialData.csv' #this loads a csv file called TutorialData and puts it into urlfile
+
+data <- read.csv(urlfile) %>% 
   tibble::as_tibble()
 
 data
 ```
+```{r}
+data$Group <- as.factor(data$Group)
+data$Sex <- as.factor(data$Sex)
+
+
+```
+
 
 # For loops
 
@@ -33,63 +43,109 @@ for (i in 1:10){
 ```
 ```{r}
 for (i in 1:10){
-  print(paste0('This is element #',i))
+  print(paste0('this is element #', i))
+
 }
 ```
+
 ```{r}
 vector <- c()
+loopn = c("ID1", "ID2", "ID3")
 
-for (i in 1:10){
-  vector[i] <- paste0('This is element #',i)
+for (i in 1:length(loopn)){
+  
+  vector[i] <- paste0('This is element ', loopn[i])
+  
 }
 
 vector
+
 ```
+
 # Functions
 
 ```{r}
-myFunc <- function(x){
+MyFunc <- function(x){
   
-  y <- x^2 + 2*x
+  y <- x^2
   return(y)
-} 
+}
+
 ```
 
 ```{r}
-myFunc(1:4)
+list_of_numbers <- c(1,2,3,4,5,10,12,14,16,18,20)
+
+MyFunc(list_of_numbers)
 ```
+
 # ggarrange and publication-ready figures
 
 ```{r}
+install.packages("ggpubr")
 library(ggpubr)
+library(ggforce) #make sure to install it if you haven't already
+
 ```
 
 ```{r}
+install.packages("paletteer")
 library(paletteer)
+
+```
+
+
+Make a boxplot
+```{r}
+boxplot_sens <- data %>%
+  ggplot(aes(x = Group,
+             y = Sensory1)) +
+  geom_boxplot(aes(color = Group,
+                   fill = Group),
+               width = 0.5,
+               alpha = 0.3,
+               outlier.shape = NA) +
+  ggforce::geom_sina(aes(fill = Group,
+                         colour = Group),
+                     size = 3,
+                     pch = 21,
+                     alpha = 0.9,
+                     maxwidth = 0.5) +
+  theme_bw() +
+  xlab("Group") +
+  ylab("Sensory Score") + 
+  ggtitle("Sensory Score by Group") +
+  theme(plot.title = element_text(hjust = 0.5), 
+        text = element_text(size = 14), 
+        legend.position = c(0.9,0.9), 
+        legend.title = element_blank(), 
+        legend.background = element_blank()) + 
+  scale_fill_paletteer_d("MetBrewer::Juarez") + 
+  scale_colour_paletteer_d("MetBrewer::Juarez")
+  
 ```
 
 ```{r}
-bxp <- data %>% 
-  
-  ggplot(aes(y = Sensory1,
-             x = Group)) +
-  geom_boxplot(aes(color = Group, 
-                   fill = Group), 
-               width = 0.5, 
-               alpha = 0.3, 
-               outlier.shape = NA) + 
-  ggforce::geom_sina(aes(fill = Group, 
-                         colour = Group), 
-                size = 3, 
-                pch = 21, 
-                alpha = 0.4, 
-                maxwidth = .5) + 
+boxplot_GABA <- data %>%
+  ggplot(aes(x = Group,
+             y = GABA)) +
+  geom_boxplot(aes(color = Group,
+                   fill = Group),
+               width = 0.5,
+               alpha = 0.3,
+               outlier.shape = NA) +
+  ggforce::geom_sina(aes(fill = Group,
+                         colour = Group),
+                     size = 3,
+                     pch = 21,
+                     alpha = 0.9,
+                     maxwidth = 0.5) +
   theme_bw() +
   xlab("Group") +
-  ylab("Sensory Scores") +
-  ggtitle("Sensory Scores by group") +
+  ylab("GABA concentration") + 
+  ggtitle("GABA by Group") +
   theme(plot.title = element_text(hjust = 0.5), 
-        text = element_text(size = 24), 
+        text = element_text(size = 14), 
         legend.position = c(0.9,0.9), 
         legend.title = element_blank(), 
         legend.background = element_blank()) + 
@@ -97,88 +153,164 @@ bxp <- data %>%
   scale_colour_paletteer_d("MetBrewer::Juarez")
 ```
 
+Dots instead
 ```{r}
-dots <- data %>% 
-  
-  ggplot(aes(y = Sensory1,
-             x = Group)) +
+dots <- data %>%
+  ggplot(aes(x = Group,
+             y = Sensory1)) +
   ggforce::geom_sina(aes(fill = Group, 
-                         colour = Group), 
-                size = 3, 
-                pch = 21, 
-                alpha = 0.4, 
-                maxwidth = .5) + 
+                         colour = Group),
+                     size = 5,
+                     pch = 21,
+                     alpha = 1,
+                     maxwidth = 0.8) +
   theme_bw() +
   xlab("Group") +
-  ylab("Sensory Scores") +
-  ggtitle("Sensory Scores by group") +
+  ylab("Sensory Score") + 
+  ggtitle("Sensory Score by Group - Dots only") +
   theme(plot.title = element_text(hjust = 0.5), 
-        text = element_text(size = 24), 
+        text = element_text(size = 14), 
         legend.position = c(0.9,0.9), 
         legend.title = element_blank(), 
         legend.background = element_blank()) + 
   scale_fill_paletteer_d("MetBrewer::Juarez") + 
   scale_colour_paletteer_d("MetBrewer::Juarez")
+  
 ```
 
+Scatterplot
 ```{r}
-scatter <- data %>% 
-  
-  ggplot(aes(y = Sensory1,
-             x = GABA)) +
+scatter <- data %>%
+  ggplot(aes(x = Sensory1,
+             y = GABA)) +
   geom_point(aes(fill = Group, 
-                         colour = Group), 
-                size = 3, 
-                pch = 21, 
-                alpha = 0.4, 
-                maxwidth = .5) + 
+                 colour = Group),
+             size = 3,
+             pch = 21,
+             alpha = 0.9) +
   theme_bw() +
-  xlab("GABA") +
-  ylab("Sensory Scores") +
-  ggtitle("Sensory Scores by group") +
+  xlab("Sensory Score") +
+  ylab("GABA concentration") +
+  ggtitle("Sensory scores by GABA") +
   theme(plot.title = element_text(hjust = 0.5), 
-        text = element_text(size = 24), 
+        text = element_text(size = 14), 
         legend.position = c(0.9,0.9), 
         legend.title = element_blank(), 
         legend.background = element_blank()) + 
   scale_fill_paletteer_d("MetBrewer::Juarez") + 
   scale_colour_paletteer_d("MetBrewer::Juarez")
+  
+
 ```
 
-
+Use ggarrange
 ```{r}
-ggpubr::ggarrange(bxp, dots, scatter, ncol = 2, nrow = 2)
+figure_1 <- ggpubr::ggarrange(boxplot_sens, boxplot_GABA, dots, scatter, ncol = 4, nrow = 1, labels = "AUTO", common.legend = TRUE, legend = "bottom")
 ```
 
 # Adding stats to your plots
 
 ```{r}
-data %>% 
-  
-  ggplot(aes(y = Sensory1,
-             x = Group)) +
-  geom_boxplot(aes(color = Group, 
-                   fill = Group), 
-               width = 0.5, 
-               alpha = 0.3, 
-               outlier.shape = NA) + 
-  ggforce::geom_sina(aes(fill = Group, 
-                         colour = Group), 
-                size = 3, 
-                pch = 21, 
-                alpha = 0.4, 
-                maxwidth = .5) + 
+boxplot_sens <- data %>%
+  ggplot(aes(x = Group,
+             y = Sensory1)) +
+  geom_boxplot(aes(color = Group,
+                   fill = Group),
+               width = 0.5,
+               alpha = 0.3,
+               outlier.shape = NA) +
+  ggforce::geom_sina(aes(fill = Group,
+                         colour = Group),
+                     size = 3,
+                     pch = 21,
+                     alpha = 0.9,
+                     maxwidth = 0.5) +
   theme_bw() +
   xlab("Group") +
-  ylab("Sensory Scores") +
-  ggtitle("Sensory Scores by group") +
+  ylab("Sensory Score") + 
+  ggtitle("Sensory Score by Group") +
   theme(plot.title = element_text(hjust = 0.5), 
-        text = element_text(size = 24), 
+        text = element_text(size = 14), 
         legend.position = c(0.9,0.9), 
         legend.title = element_blank(), 
         legend.background = element_blank()) + 
   scale_fill_paletteer_d("MetBrewer::Juarez") + 
-  scale_colour_paletteer_d("MetBrewer::Juarez") + 
+  scale_colour_paletteer_d("MetBrewer::Juarez") +
   
-  ggpubr::stat_compare_means(method = 't.test')
+  ggpubr::stat_compare_means(method = "wilcox.test")
+
 ```
+
+# Some basic linear models
+
+Do a simple correlation (Pearson and Spearman)
+```{r}
+cor.test(data$GABA, data$Age, method = "pearson")
+
+library(rstatix) #install if you do not have it yet
+data %>% 
+  filter(Group == "ASD") %>%
+  cor_test(GABA, Age)
+
+data %>% 
+  filter(Group == "TDC") %>%
+  cor_test(GABA, Age)
+```
+```{r}
+
+cor.test(data$GABA, data$Sensory1, method = "spearman")
+
+library(rstatix) #install if you do not have it yet
+data %>% 
+  filter(Group == "ASD") %>%
+  cor_test(GABA, Sensory1, method = "spearman")
+
+data %>% 
+  filter(Group == "TDC") %>%
+  cor_test(GABA, Age)
+```
+Plot this on a ggplot
+
+```{r}
+scatter <- data %>%
+  ggplot(aes(x = Sensory1,
+             y = GABA)) +
+  geom_point(aes(fill = Group, 
+                 colour = Group),
+             size = 3,
+             pch = 21,
+             alpha = 0.9) +
+  theme_bw() +
+  xlab("Sensory Score") +
+  ylab("GABA concentration") +
+  ggtitle("Sensory scores by GABA") +
+  theme(plot.title = element_text(hjust = 0.5), 
+        text = element_text(size = 14), 
+        legend.position = c(0.9,0.9), 
+        legend.title = element_blank(), 
+        legend.background = element_blank()) + 
+  scale_fill_paletteer_d("MetBrewer::Juarez") + 
+  scale_colour_paletteer_d("MetBrewer::Juarez") +
+  geom_smooth(method = lm, 
+              se = TRUE) +
+  stat_cor() 
+  
+```
+
+
+Do a simple linear model
+
+Say we want to predict whether GABA predicts sensory scores
+```{r}
+model <- lm(data = data, Sensory1 ~ GABA + Age)
+summary(model)
+
+# We can do a ttest
+t_test(data = data, Sensory1 ~ Group)
+
+#Our linear model shows the exact same thing (in this case ASD = our reference group)
+model2 <- lm(data = data, Sensory1 ~ Group + Age)
+summary(model2)
+
+```
+

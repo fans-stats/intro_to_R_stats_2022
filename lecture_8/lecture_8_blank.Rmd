@@ -1,0 +1,163 @@
+---
+title: "Lecture 8: Mediation Regression Analysis"
+author: "Dr Nicolaas Puts and Dr Lucas França"
+date: "28 November 2022"
+output:
+  html_document:
+    df_print: paged
+  pdf_document: default
+editor_options: 
+  chunk_output_type: inline
+  markdown: 
+    wrap: 72
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Background:
+
+Job Search Intervention Study is a randomized study that investigates the efficacy of a job training intervention on unemployed workers. The program is designed to not only increase reemployment among the unemployed but also enhance their mental health. The data consists of a sample of n=899 subjects. Several variables have been recorded:
+
+-	treat: indicator variable for whether participant was randomly selected for the job training programme (1= treatment group, 0= control group)
+-	job_seek: a continuous scale measuring the level of job-search self-efficacy with values from 1 to 5.
+-	depress: post treatment depression score
+-	sex: gender (0 = male, 1 = female)
+-	age: age (in years)
+
+
+
+## Loading Packages
+
+```{r}
+library(foreign)
+library(tidyverse)
+library(car) # Remember to install the package 'car' if you do not have it yet!
+library(gmodels) # Also install the package 'gmodels' if you do not have it!
+library(psych)
+library(ggpubr)
+library(broom)
+```
+
+## Loading data
+
+```{r}
+url <- 'https://github.com/fans-stats/intro_to_R_stats/blob/main/datasets/job_seek.sav?raw=true'
+```
+
+
+# Task 1
+
+First, identify the type of each variable in the dataset.
+
+- treat is a categorical nominal (binary) variable ▪ job_seek is a numerical continuous variable
+- depress is a numerical continuous variable
+- sex is a categorical nominal (binary) variable
+- age is a numerical continuous variable
+
+# Task 2
+
+Use the appropriate descriptive indices to identify potential typos and if so, clean the dataset. Use the space below to keep a record of the typos you found and then delete them to create a “clean data set”.
+
+Sex (-1 and 2); Age (105)
+
+```{r}
+```
+
+```{r}
+```
+
+
+# Tidyverse and functions
+
+## Creating a simple mean function
+
+```{r}
+```
+
+
+```{r}
+```
+
+Say that for some reason you need another variable - just mutate()
+
+```{r}
+```
+
+
+```{r}
+```
+
+
+# Task 3
+
+It is hypothesised that the participation in the job training programme will improve participants’ job-search skills which in turn will reduce unemployment related depression symptoms. The main objective of this practical is to investigate if the effect of treatment (participation in the job training programme) on depression is mediated by job-search self- efficacy (job-seek).
+
+a) Use the appropriate SPSS command to build a linear regression model that can be used to estimate the total effect (path c) of treatment (participation in the job training programme) on the post-treatment depression symptoms of the jobseekers.
+
+```{r}
+```
+
+```{r}
+```
+b) Identify and comment on the total effect of the treatment on depression from the regression output. Establish whether Step 1 of Baron and Kenny approach is satisfied.
+
+The estimate of path c (total effect of the treatment on depression) is -0.104 (p=0.025) with 95% confidence interval (-0.194, -0.013). The estimated coefficient and the p-value show that the total effect is statistically significant. Therefore, we reject the null hypothesis, and conclude that participation in the job training treatment significantly reduces depression. Step 1 of Baron and Kenny approach is satisfied.
+
+# Task 4
+
+Estimate and test paths a, b, and c’ of the Baron and Kenny mediation model and establish if job-search self-efficacy (job_seek) mediates the treatment effect (treat) on depression symptoms (depress).
+
+a) Use the appropriate SPSS command to build a linear regression model that can be used to estimate and test the path a (effect of treatment on mediator). Report on what are the estimates and statistical significance of path a.
+
+To estimate and test path a, we fit a simple linear regression of mediator (job_seek) on treatment (treat).
+
+```{r}
+```
+```{r}
+```
+The estimated path a and its statistical inference are:
+
+a = 0.117 (p=0.023), 95% CI= (0.016, 0.218). This implies that the treatment has a significant effect on the hypothesised mediator. This satisfies step 2 of Baron and Kenny approach.
+
+b) Use the appropriate SPSS command to build a linear regression model that can be used to estimate path b (effect of mediator on outcome, controlling for treatment) and path c’ (effect of treatment on outcome, controlling for mediator). Report on the estimates and statistical significance of path b and c’.
+
+To estimate and test path b and c', fit a multiple linear regression of outcome (depress) on independent variables treatment (treat) and the mediator (job_seek).
+
+```{r}
+```
+```{r}
+```
+The estimated paths b, c’ and their statistical inferences are:
+- b = -0.226 (p<0.001), 95% CI= (-0.283, -0.169). This indicates that the mediator (controlling for treatment) has an effect on the outcome (significantly reduces depression), which establishes Step 3 of Baron and Kenny method.
+
+- c' = -0.077 (p=0.086), 95% CI= (-0.165, 0.011). This indicates that the direct effect of treatment on the outcome (c = -0.077) is weaker than the total effect (c=-0.104) and the direct effect is not statistically significant.
+
+Do the results establish that job-search self-efficacy (job_seek) mediates the treatment effect?
+
+Yes, the results lead to the conclusion that job-search self-efficacy fully mediates the effect of treatment (job training programme) on depression symptoms.
+
+# Task 5
+
+a) Estimate the indirect effect (ab) from the regression outputs in Task 4.
+
+Indirect effect (ab) can be calculated as the product of paths a and b, which gives: ab= (0.117)*(-0.226) = -0.026442.
+
+b) Test the statistical significance of the indirect effect using the Sobel test. Report on the results.
+
+
+```{r}
+# install.packages('bda')
+library(bda)
+#bda::mediation.test(mv,iv,dv)
+```
+
+Sobel test of indirect effect is statistically significant (test statistic= -2.185, p=0.029). This leads to the conclusion that job-search self-efficacy is a mediator of the effect of job training programme on depression symptoms.
+
+# Task 6
+
+```{r}
+```
+
+Bias corrected 95% bootstrap confidence interval (-0.05, 0)* for the indirect effect does not contain zero, which indicates that indirect effect is statistically significant. Therefore, job- search self-efficacy is a mediator of the effect of job training programme on depression symptoms.

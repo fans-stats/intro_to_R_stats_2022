@@ -1,0 +1,75 @@
+---
+title: "Lecture 8: Mediation Regression Analysis"
+author: "Dr Nicolaas Puts and Dr Lucas França"
+date: "28 November 2022"
+output:
+  html_document:
+    df_print: paged
+  pdf_document: default
+editor_options: 
+  chunk_output_type: inline
+  markdown: 
+    wrap: 72
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Background:
+
+Job Search Intervention Study is a randomized study that investigates the efficacy of a job training intervention on unemployed workers. The program is designed to not only increase reemployment among the unemployed but also enhance their mental health. The data consists of a sample of n=899 subjects. Several variables have been recorded:
+
+-	treat: indicator variable for whether participant was randomly selected for the job training programme (1= treatment group, 0= control group)
+-	job_seek: a continuous scale measuring the level of job-search self-efficacy with values from 1 to 5.
+-	depress: post treatment depression score
+-	sex: gender (0 = male, 1 = female)
+-	age: age (in years)
+
+
+
+# Task 1
+
+- Load the relevant packages for your analysis
+
+```{r}
+```
+
+# Task 2
+
+Load the dataset
+
+```{r}
+url <- 'https://github.com/fans-stats/intro_to_R_stats/blob/main/datasets/job_seek.sav?raw=true'
+```
+
+# Task 3
+
+- Create a new variable indicate whether the participant's age is above 40.
+
+```{r}
+```
+
+# Task 4:
+
+- With summarise() estimate for the groups defined in task 4 the median age and depress and count how many received each type of treatment:
+
+```{r}
+```
+
+# Task 5:
+
+- Find the error in the following code section:
+
+```{r}
+dataset %>% 
+  dplyr::mutate(sex = dplyr::recode(sex, 
+                                    '0' = 'Male', 
+                                    '1' = 'Female'))
+  
+  ggplot2::ggplot(aes(x = sex, y = depress)) + 
+    geom_boxplot() + 
+    geom_jitter() + 
+    theme_bw()
+```
+

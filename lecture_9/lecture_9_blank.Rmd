@@ -1,0 +1,100 @@
+---
+title: "Lecture 9: Lecture 9: Moderation & Interaction"
+author: "Dr Nicolaas Puts and Dr Lucas França"
+date: "5 December 2022"
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
+editor_options: 
+  chunk_output_type: inline
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+# Background:
+
+The data file contains crime rate data on 51 US states. Several continuous and categorical variables have been recorded:
+- state – US state
+- crime – violent crime rate (per 100,000 people)
+- murder – murder rate (per 100,000 people)
+- metropol – percent living in cities
+- white – percent white people
+- edu – percent gaining high school education
+- poverty – percent below the poverty line
+- single – percent lone parents
+- urban – a categorised (binary) version of metropol [urban = 1 if metropol >= median (69.8); urban = 0 otherwise)
+
+
+## Loading Packages
+
+```{r}
+#install.packages("gmodels")
+library(foreign)
+library(tidyverse)
+library(car) # Remember to install the package 'car' if you do not have it yet!
+library(gmodels) # Also install the package 'gmodels' if you do not have it!
+```
+
+## Loading data
+
+```{r}
+url <- 'https://github.com/fans-stats/intro_to_R_stats/blob/main/datasets/crime_rates.sav?raw=true'
+```
+
+# Task 2
+
+Use the appropriate descriptive indices to identify potential typos and if so, clean the dataset. Use the space below to keep a record of the typos you found and then delete them to create a “clean data set”.
+
+```{r}
+```
+
+
+# Task 3
+
+It is hypothesised that urbanicity is a modifier of the effect of poverty on crime. To investigate the effect modification please follow the next steps.
+a) Use the appropriate SPSS command to create a cross-product (poverty_X_urban) term by multiplying poverty with urban.
+b) Use a multiple linear regression model to assess if urbanicity is an effect modifier of the poverty-crime association.
+
+```{r}
+dataset %>% 
+  lm(formula = crime ~ urban*poverty) %>% 
+  summary()
+```
+
+
+
+c) What does the regression coefficient of poverty_X_urban tell you? Comment on the statistical significance of the coefficient.
+
+The regression coefficient of poverty_X_urban represents the interaction effect between poverty and urbanicity. The p-value (p=0.004) suggests that interaction effect is statistically significant. This implies that both predictors jointly affect crime rate, but their effects are not independent of each other. Effect of poverty depends on urbanicity and vice-versa.
+
+The estimated coefficient (57.326) can be interpreted as the difference of the effect of poverty on crime rate between highly urbanised (urban=1) and low-urbanised (urban=0) states.
+
+
+d) Do the coefficients of poverty and urban carry their usual meaning? Interpret their estimated values from the fitted interaction model.
+
+The coefficients of the predictors poverty and urban do not carry their usual interpretations because of the presence of an interaction (cross-product) term involving these predictors.
+For the interaction model, the coefficient of poverty can be interpreted as the effect of poverty on crime rate when urban=0. The estimated coefficient (21.798) implies that, in low-urbanised states, one unit increase in poverty leads to 21.798 units increase in crime rate.
+Similarly, the coefficient of urban (-416.523) represents the effect of urbanicity on crime rate when poverty=0. This coefficient may not be of great interest in this study as the zero poverty is an unrealistic value.
+Interaction term is the difference between low urbanised and high urbanised areas in the the poverty –crime association
+
+e) What is the estimated linear effect of poverty on crime rate for low-urbanised (urban=0) and highly urbanised (urban =1) states?
+
+The general formula for the effect of poverty on crime rate based on the above interaction model is given by:
+Effect of poverty = Coefficient of poverty + Coefficient of interaction term * Urbanicity
+Therefore:
+Effect of poverty for low urbanised states = 21.798 + 57.326 x 0 = 21.798 
+Effect of poverty for highly urbanised states = 21.798 + 57.326 x 1 = 79.124
+
+# Task 4
+
+a) For the poverty by urban interaction model in Task 3, calculate the standardised DFBETA and DFFIT measures.
+
+```{r}
+```
+
+The data for the states LA and DC have absolute standardised DFFIT and DFBETA measures exceeding 1, indicating that these two states have strong influence on the fitted model. The state DC (District of Yes, the results lead to the conclusion that job-search self-efficacy fully mediates the effect of Columbia) has the highest absolute DFFIT and DFBETA measures suggesting that the data for this state treatment (job training programme) on depression symptoms has the strongest influence. Such data points need to be further scrutinised for validity and may need to be removed from the analysis as they can lead to a distorted estimate of the true population relationship.
+

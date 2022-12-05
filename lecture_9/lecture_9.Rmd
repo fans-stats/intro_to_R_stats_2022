@@ -132,8 +132,9 @@ dataset %>%
   
   ggplot(aes(x , y , group = group))+
   geom_polygon(aes(fill = edu), 
-               color = "white")+
+               color = "black")+
   scale_fill_viridis_c(option = "C") + 
-  usmap:::theme_map()
+  usmap:::theme_map() + 
+  theme(panel.background = element_rect(color = "BLACK", fill = "GRAY"))
 ```
 

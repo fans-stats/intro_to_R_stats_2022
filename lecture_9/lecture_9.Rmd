@@ -114,3 +114,30 @@ dataset %>%
 ```
 
 The data for the states LA and DC have absolute standardised DFFIT and DFBETA measures exceeding 1, indicating that these two states have strong influence on the fitted model. The state DC (District of Yes, the results lead to the conclusion that job-search self-efficacy fully mediates the effect of Columbia) has the highest absolute DFFIT and DFBETA measures suggesting that the data for this state treatment (job training programme) on depression symptoms has the strongest influence. Such data points need to be further scrutinised for validity and may need to be removed from the analysis as they can lead to a distorted estimate of the true population relationship.
+
+
+# Plotting maps
+
+```{r}
+state_names <- readr::read_csv(file = 'https://raw.githubusercontent.com/fans-stats/intro_to_R_stats_2022/main/lecture_9/us_states.csv') %>% 
+  dplyr::rename('state' = 'Abbreviation', 
+                'region' = 'State name')
+```
+
+```{r}
+library(maps)
+
+states_map <- map_data("state")
+```
+
+```{r}
+dataset %>% 
+  dplyr::inner_join(state_names) %>% 
+  dplyr::inner_join(states_map) %>% 
+  
+  ggplot(aes(x = long, y = lat, group = group))+
+  geom_polygon(aes(fill = poverty), 
+               color = "white")+
+  scale_fill_viridis_c(option = "C")
+```
+

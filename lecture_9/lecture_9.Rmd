@@ -118,26 +118,22 @@ The data for the states LA and DC have absolute standardised DFFIT and DFBETA me
 
 # Plotting maps
 
-```{r}
-state_names <- readr::read_csv(file = 'https://raw.githubusercontent.com/fans-stats/intro_to_R_stats_2022/main/lecture_9/us_states.csv') %>% 
-  dplyr::rename('state' = 'Abbreviation', 
-                'region' = 'State name')
-```
 
 ```{r}
-library(maps)
+library(usmap)
 
-states_map <- map_data("state")
+states_map <- us_map(regions = "states")
 ```
 
 ```{r}
 dataset %>% 
-  dplyr::inner_join(state_names) %>% 
+  dplyr::rename('abbr' = 'state') %>% 
   dplyr::inner_join(states_map) %>% 
   
-  ggplot(aes(x = long, y = lat, group = group))+
-  geom_polygon(aes(fill = poverty), 
+  ggplot(aes(x , y , group = group))+
+  geom_polygon(aes(fill = edu), 
                color = "white")+
-  scale_fill_viridis_c(option = "C")
+  scale_fill_viridis_c(option = "C") + 
+  usmap:::theme_map()
 ```
 

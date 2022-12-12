@@ -43,6 +43,9 @@ library(gmodels) # Also install the package 'gmodels' if you do not have it!
 
 ```{r}
 url <- 'https://github.com/fans-stats/intro_to_R_stats/blob/main/datasets/child_dev_a.sav?raw=true'
+dataset <- foreign::read.spss(file = url, to.data.frame = TRUE) %>% 
+  tibble::as_tibble()
+dataset
 ```
 
 # Task 1:
@@ -51,6 +54,11 @@ We want to compare the effects of a child’s gender on the risk of depression a
 
 ```{r}
 # First we look at the crosstables using the CrossTable() function from package 'gmodels'.
+gmodels::CrossTable(dataset$malcat, dataset$sex, 
+                    format = c('SPSS'), 
+                    prop.r = FALSE, 
+                    prop.t = FALSE, 
+                    prop.chisq = FALSE)
 ```
 
 Risk of having malaise in males = 26 ÷ 491 = 0·053
@@ -86,7 +94,17 @@ Is there an association between a child’s gender and them suffering malaise at
 
 ```{r}
 #install.packages('fmsb')
+library(fmsb)
+
+dataset %>% 
+  glm(formula = malcat ~ sex, family = binomial(link = 'logit')) %>% 
+  summary()
+
+dataset %>% 
+  glm(formula = malcat ~ sex, family = binomial(link = 'logit')) %>% 
+  fmsb::NagelkerkeR2()
 ```
+
 H0: there is no association between gender and malaise at age 22
 H1: there is an association between gender and malaise at age 22
 
@@ -96,6 +114,13 @@ There was a significant improvement to the constant only model. Nagelkerke $R^2$
 # Task 4
 
 ```{r}
+dataset %>% 
+  glm(formula = malcat ~ sex + reading + scd + sha + class, family = binomial(link = 'logit')) %>% 
+  summary()
+
+dataset %>% 
+  glm(formula = malcat ~ sex + reading + scd + sha + class, family = binomial(link = 'logit')) %>% 
+  fmsb::NagelkerkeR2()
 ```
 There was a significant improvement to the constant only model. Nagelkerke R^2 = 10.5% of the variation in malaise can be explained by the model including gender, reading score, scd, sha and class.
 
@@ -106,6 +131,11 @@ There was a significant improvement to the constant only model. Nagelkerke R^2 =
 
 ```{r}
 url <- 'https://raw.githubusercontent.com/fans-stats/intro_to_R_stats_2022/main/lecture_10/covid_deaths_la.csv'
+covid <- readr::read_csv(url) %>% 
+  dplyr::rename(local_authority = `Area of usual residence name`,
+                local_authority_code = `Area of usual residence code`)
+
+covid
 ```
 
 ```{r}

@@ -1,0 +1,260 @@
+---
+title: "Lecture 10: GLM/logistic models and a review"
+author: "Dr Nicolaas Puts and Dr Lucas França"
+date: "12 December 2022"
+output:
+  html_document:
+    df_print: paged
+  pdf_document: default
+editor_options: 
+  chunk_output_type: inline
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+# Background:
+
+The data set consists of a sample of n=1000 sixteen years old children. Several continuous and categorical variables have been recorded:
+- weight – weight in kg at age 16
+- sex – gender of child (0 = male, 1 = female)
+- height – height in cm at age 16
+- class – registrar general's classification of social class (7 categories)
+- malcat – Malaise score (0=no, 1=yes)
+- reading – Reading score
+- scd – CD rating
+- sha – Hyperactivity (HA) rating
+
+
+## Loading Packages
+
+```{r}
+#install.packages("gmodels")
+library(foreign)
+library(tidyverse)
+library(car) # Remember to install the package 'car' if you do not have it yet!
+library(gmodels) # Also install the package 'gmodels' if you do not have it!
+```
+
+
+## Loading data
+
+```{r}
+url <- 'https://github.com/fans-stats/intro_to_R_stats/blob/main/datasets/child_dev_a.sav?raw=true'
+dataset <- read.spss(file = url, to.data.frame = TRUE)
+dataset <- as_tibble(dataset)
+dataset
+```
+
+# Task 1:
+
+We want to compare the effects of a child’s gender on the risk of depression at the age of 22 measured as the dichotomised malaise score where 0 = No malaise and 1 = Yes malaise. Calculate your answer to 3 decimal places
+
+```{r}
+# First we look at the crosstables using the CrossTable() function from package 'gmodels'.
+
+CrossTable(dataset$malcat, dataset$sex,
+           format=c("SPSS"),
+           prop.r = FALSE,
+           prop.t = FALSE,
+           prop.chisq=FALSE)
+```
+
+Risk of having malaise in males = 26 ÷ 491 = 0·053
+Risk of having malaise in females = 72 ÷ 509 = 0·141
+We can compare the risk for each of the groups using the risk ratio.
+(Risk when male) ÷ (Risk when female) = 0·053 ÷ 0·14 = 0.376
+Those who were male had 0.37 times the risk of having malaise at 22 compared to those who were female.
+
+We can also present risk as a percentage using the following formula % decrease = (1 - RR) x 100 Males had a 63% reduction in risk of malaise at 22 compared to females.
+
+You could have also calculated this as
+(Risk when female) ÷ (Risk when male) = 0.14 ÷ 0.053 = 2.642
+Those who were female had 2.64 times the risk of having malaise at 22 compared to those who were male.
+
+We can also present risk as a percentage using the following formula % increase = (RR - 1) x 100 Those who were female had a 164% increase in risk of having malaise at 22 compared to males.
+
+# Task 2:
+
+We want to compare the effects of a child’s gender on the odds of depression measured as the dichotomous malaise score where 0 = No malaise and 1 = Yes malaise. Calculate your answer to 3 decimal places (3dp)
+
+Odds of having malaise in males = 26 ÷ 465 = 0·056
+Odds of having malaise in females = 72 ÷ 437 = 0·165
+We can compare the odds for each of the groups using the odds ratio.
+(Odds when male) ÷ (Odds when female) = 0·056 ÷ 0·165 = 0.339
+So the odds of having malaise at 22 when the child is male is about a 1/3 of the odds of females having malaise at 22.
+You could have also calculated this as
+(Odds when female) ÷ (Odds when male) = 0.165 ÷ 0.056 = 2.946
+So the odds of having malaise at 22 when the child is female is about 3 times of the odds of a male child.
+
+# Task 3:
+
+Is there an association between a child’s gender and them suffering malaise at age 22?
+
+```{r}
+#install.packages('fmsb')
+library(fmsb)
+
+dataset %>% 
+  glm(formula = malcat ~ sex, family = binomial(link='logit')) %>% 
+  summary()
+
+dataset %>% 
+  glm(formula = malcat ~ sex,family = binomial(link='logit')) %>% 
+  fmsb::NagelkerkeR2()
+```
+H0: there is no association between gender and malaise at age 22
+H1: there is an association between gender and malaise at age 22
+
+There was a significant improvement to the constant only model. Nagelkerke $R^2$ = 4.8% of the variation in malaise can be explained by the model including gender.
+
+
+# Task 4
+
+```{r}
+dataset %>% 
+  dplyr::mutate(class = as.factor(class)) %>% 
+  glm(formula = malcat ~ sex + reading + scd + sha + class, 
+      family = binomial(link='logit')) %>% 
+  summary()
+
+dataset %>% 
+  dplyr::mutate(class = as.factor(class)) %>% 
+  glm(formula = malcat ~ sex + reading + scd + sha + class, 
+      family = binomial(link='logit')) %>% 
+  NagelkerkeR2()
+```
+There was a significant improvement to the constant only model. Nagelkerke R^2 = 10.5% of the variation in malaise can be explained by the model including gender, reading score, scd, sha and class.
+
+
+# A Review
+
+```{r}
+url <- 'https://raw.githubusercontent.com/fans-stats/intro_to_R_stats_2022/main/lecture_10/covid_deaths_la.csv'
+covid <- read.csv(file = url) %>% 
+  tibble::as_tibble() %>% 
+  dplyr::rename(local_authority = Area.of.usual.residence.name, 
+                local_authority_code = Area.of.usual.residence.code) %>% 
+  dplyr::mutate(March = as.numeric(March), 
+                April = as.numeric(April), 
+                May = as.numeric(May), 
+                June = as.numeric(June), 
+                July = as.numeric(July))
+covid
+```
+
+```{r}
+url <- 'https://raw.githubusercontent.com/fans-stats/intro_to_R_stats_2022/main/lecture_10/deprivation_la.csv'
+deprivation <- read.csv(file = url) %>% 
+  as_tibble() %>% 
+  dplyr::rename(local_authority = Local.Authority.District.name..2019., 
+                local_authority_code = Local.Authority.District.code..2019.,
+                income_score = Income.deprivation..Average.score, 
+                income_rank = Income.deprivation...Rank.of.average.score
+                )
+deprivation
+```
+
+```{r}
+library(readxl)
+
+url <- 'https://github.com/fans-stats/intro_to_R_stats_2022/blob/main/lecture_10/pop_la.xls?raw=true'
+destfile <- './pop_la.xls'
+download.file(url, destfile)
+population <- readxl::read_xls(path = destfile) %>% 
+  as_tibble() %>% 
+  dplyr::rename(local_authority = `Area name`, 
+                local_authority_code = `Area code [note 2]`,
+                total_population = `All persons`
+                ) 
+population
+```
+
+
+```{r}
+data <- inner_join(covid, deprivation) %>% 
+  inner_join(population)
+data
+```
+
+```{r}
+data %>% 
+  dplyr::filter(Cause.of.death == 'COVID-19') %>% 
+  dplyr::mutate(deaths = March + April + May + June + July, 
+                death_rate = deaths/total_population) %>% 
+  
+  ggplot2::ggplot(aes(x = income_score, y = deaths)) + 
+    geom_point() + 
+    theme_bw()
+```
+
+```{r}
+data %>% 
+  dplyr::filter(Cause.of.death == 'COVID-19') %>% 
+  dplyr::mutate(deaths = March + April + May + June + July, 
+                death_rate = deaths/total_population) %>% 
+  
+  lm(formula = death_rate ~ income_score) %>% 
+  summary()
+```
+
+```{r}
+data %>% 
+  dplyr::filter(Cause.of.death == 'COVID-19') %>% 
+  dplyr::mutate(deaths = March + April + May + June + July, 
+                death_rate = deaths/total_population*100000) %>% 
+  
+  group_by(death_rate) %>% 
+  head(20) %>% 
+  
+  ggplot2::ggplot(aes(reorder(x = local_authority, death_rate), y = death_rate)) + 
+    geom_col(aes(fill = income_score)) + 
+    coord_flip() + 
+    theme_bw()
+```
+
+```{r}
+library(sf)
+
+lad <- st_read('Local_Authority_Districts_(April_2019)_UK_BUC.geojson')
+
+covid_data <- data %>% 
+  dplyr::filter(Cause.of.death == 'COVID-19') %>% 
+  dplyr::mutate(deaths = March + April + May + June + July, 
+                death_rate = deaths/total_population*100000) %>% 
+  dplyr::rename(LAD19NM = local_authority, 
+                LAD19CD = local_authority_code
+                ) 
+
+lad_sf <- lad %>% 
+  left_join(covid_data) %>% 
+  st_as_sf(lad, coords=c(LONG,LAT), crs=4326)  # convert to {sf} format
+
+```
+
+```{r}
+lad_sf %>% 
+  ggplot() + 
+    geom_sf(aes(fill = death_rate)) + 
+    scale_fill_viridis_c(trans = 'log10') + 
+    theme_minimal()
+```
+
+```{r}
+url <- './trust_data.csv'
+trusts <- read.csv(file = url) %>% 
+  as_tibble() 
+trusts
+```
+
+```{r}
+lad_sf %>% 
+  ggplot() + 
+    geom_sf(aes(fill = death_rate)) + 
+    geom_point(data = trusts, aes(x = Longitude, y = Latitude)) +
+    scale_fill_viridis_c() + 
+    theme_minimal()
+```
+

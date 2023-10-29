@@ -1,0 +1,71 @@
+---
+title: 'Lecture 3 - tasks'
+author: "Dr Nicolaas Puts and Dr Lucas França"
+date: "17 October 2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+1. Create a vector and perform a few operations using pipe (%>%).
+
+```{r}
+library(tidyverse)
+
+set.seed(42)
+x <- sample(-101:255,100)
+
+x %>% 
+  abs() %>% 
+  mean()
+```
+
+
+- For the dataset available in https://raw.githubusercontent.com/HeJasonL/BIG-TAC/main/TutorialData.csv.
+
+2.  Filter for female-only participants and obtain descriptive statistics for GABA and Sensory1 variables.
+
+```{r}
+readr::read_csv(file = 'https://raw.githubusercontent.com/HeJasonL/BIG-TAC/main/TutorialData.csv') %>% 
+  dplyr::filter(Sex == 'F') %>% 
+  dplyr::summarise(mean_GABA = mean(GABA), 
+                   mean_Sensory1 = mean(Sensory1))
+```
+
+
+3. Obtain mean and standard deviation for Age, GABA and Sensory1 in each Group using summarise().
+
+```{r}
+readr::read_csv(file = 'https://raw.githubusercontent.com/HeJasonL/BIG-TAC/main/TutorialData.csv') %>% 
+  dplyr::group_by(Sex) %>% 
+  dplyr::summarise(mean_Age = mean(Age), 
+                   sd_Age = sd(Age), 
+                   mean_GABA = mean(GABA), 
+                   sd_GABA = sd(GABA), 
+                   mean_Sensory1 = mean(Sensory1), 
+                   sd_Sensory1 = sd(Sensory1))
+```
+
+
+4. From the output of the previous outputs, obtain the 95% CI using mutate().
+
+```{r}
+readr::read_csv(file = 'https://raw.githubusercontent.com/HeJasonL/BIG-TAC/main/TutorialData.csv') %>% 
+  dplyr::group_by(Sex) %>% 
+  dplyr::summarise(n = length(Age), 
+                   mean_Age = mean(Age), 
+                   sd_Age = sd(Age), 
+                   mean_GABA = mean(GABA), 
+                   sd_GABA = sd(GABA), 
+                   mean_Sensory1 = mean(Sensory1), 
+                   sd_Sensory1 = sd(Sensory1)) %>% 
+  dplyr::mutate(Age_lCI = mean_Age - 1.96 * (sd_Age/n), 
+                Age_uCI = mean_Age + 1.96 * (sd_Age/n), 
+                GABA_lCI = mean_GABA - 1.96 * (sd_GABA/n), 
+                GABA_uCI = mean_GABA + 1.96 * (sd_GABA/n), 
+                Sensory1_lCI = mean_Sensory1 - 1.96 * (sd_Sensory1/n), 
+                Sensory1_uCI = mean_Sensory1 + 1.96 * (sd_Sensory1/n))
+```

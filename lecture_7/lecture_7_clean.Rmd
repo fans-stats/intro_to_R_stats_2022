@@ -1,0 +1,198 @@
+---
+title: "Lecture 7: Multiple Linear Regression"
+author: "Dr Nicolaas Puts and Dr Lucas França"
+date: "21 November 2022"
+output:
+  html_document:
+    df_print: paged
+  pdf_document: default
+editor_options: 
+  chunk_output_type: inline
+  markdown: 
+    wrap: 72
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Background:
+
+The data set consists of health information on a sample of n = 45 small US cities. The following measures have been recorded, by city:
+
+- death: death rate per 1000 residents
+- doctor: doctor availability per 100,000 residents
+- hospital: hospital availability per 100,000 residents
+- income: annual per capita income in thousands of dollars 
+- density: population density people per square mile
+
+
+## Loading Packages
+
+```{r}
+library(foreign)
+library(tidyverse)
+library(ggpubr)
+library(broom)
+```
+
+## Loading data
+
+```{r}
+url <- 'https://github.com/fans-stats/intro_to_R_stats/blob/main/datasets/health.sav?raw=true'
+
+```
+
+# Some tidyverse concepts
+
+
+# mutate() + ifelse() for creating groups
+
+```{r}
+
+```
+
+
+
+# Group_by() + Summarise() for multiple variables
+
+```{r}
+
+```
+
+# pivot_wider() and pivot_longer()
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+
+# First we should clean the dataset
+	
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+
+# Number of hospitals + income -> number of doctors?
+
+People from different cities want to claim a lack of doctors in their area. Before formulating their claim to the government, they would like to investigate the causes of the lack of doctors. They hypothesise that the number of hospitals and income per capita is associated with the number of available doctors. Investigate if the sample supports their hypothesis.
+
+a) Use the appropriate R command to build a multiple linear regression model that can be used to investigate the hypothesis.
+
+```{r}
+
+```
+
+b) Write down the equation of the multiple linear regression model in terms of y, x1, x2 and the error term.
+
+$y$ = -60.159 + 0.1$x_1$ + 13.273$x_2$ + $\epsilon$
+
+c) Explain what y, x1, x2, $\beta_0$, $\beta_1$, $\beta_2$ and $\epsilon$ represent in this context.
+
+$y$: is the doctor availability per 100,000 residents
+
+$x_1$: is the hospital availability per 100,000 residents
+
+$x_2$: is the annual per capita income in thousands of dollars
+  
+$\beta_0$: -60.159 would be the extrapolated doctor availability per 100,000 residents in a city with 0 hospitals and 0 income. (Clearly not a meaningful number in this context.)
+
+$\beta_1$: a 1 hospital increase is associated with 0.1 doctors increase per 100,000 increase for a given per capita income.
+
+$\beta_2$: a 1 thousand dollars' increase in income per capita is associated with an increase of 13.273 doctors per 100,000 residents for a given number of hospitals.
+
+$\epsilon$: is the residual value between the predicted value on the regression plane, and the observed value.
+
+
+# Task 4
+
+```{r}
+
+```
+
+There is a positive linear relationship between the two variables. Higher hospital availability is associated with higher doctor availability.
+
+```{r}
+
+```
+
+There is a positive linear relationship between the two variables. Higher annual per capita income is associated with higher doctor availability.
+
+b) The error terms 𝜀 are normally distributed
+
+```{r}
+
+```
+
+The residuals $\epsilon$ are normally distributed. We can see in the histogram that the distribution is bell-shaped and symmetrical around the mean.
+
+c) The error terms have the same variance irrespective of the size of the predicted outcome (i.e., variance does not depend on x1 or x2), also called “homoscedasticity”.
+
+We will build the scatterplot of standardized residuals and standardized predicted values.
+
+```{r}
+
+```
+
+The scatterplot of standardized residuals and standardized predicted values shows no pattern.
+
+# Task 5
+
+Provided the three assumptions to carry out statistical inference were met for the model derived in Task 3, consider testing some hypotheses next:
+
+a) Write the null and the alternative hypotheses for the regression coefficient $\beta_1$ and report on the results.
+
+$H_0$: $\beta_1$ coefficient equals 0
+$H_\alpha$: $\beta_1$ coefficient is different than 0
+   
+We can infer the value of $\beta_1$ = 0.100 for the whole population, as the $p$ value is less than 0.05 ($p$ < 0.001). Therefore, we reject the null hypothesis of no association between the two variables and we infer that the number of available doctors is associated with the number of hospitals. We estimate that a 1 hospital increase is associated with a 0.1 doctor availability increase, for a given per capita income.
+
+b) Write the null and the alternative hypotheses for the regression coefficient $\beta_2$ and considering that the model assumptions for inference are met, report on the results.
+
+$H_0$: $\beta_2$ coefficient equals 0
+$H_\alpha$: $\beta_2$ coefficient is different than 0
+  
+We can infer the value of $\beta_2$ = 13.273 for the whole population, as the $p$ value is less than 0.05 ($p$ = 0.011). Therefore, we reject the null hypothesis of no association between the two variables and we infer that the number of available doctors is associated with the income per capita. We estimate that a 1 thousand dollars increase in income per capita between cities is associated with an increase of 13.273 doctors per 100,000 population, for a given hospital availability.
+
+c) Report and interpret the 95% confidence interval for $\beta_1$.
+
+The 95% confidence interval for $\beta_1$ is [0.051, 0.148]. The estimated value for $\beta_1$ in the 95% of samples extracted from the population will belong to this interval. This interval excludes the null value of 0, also telling us that the b1 parameter is significant, i.e. there is a significant relationship between hospital and doctor availability.
+
+d) Report and interpret the 95% confidence interval for $\beta_2$.
+
+The 95% confidence interval for $\beta_2$ is [3.159, 23.387]. The estimated value for $\beta_2$ in the 95% of samples extracted from the population will belong to this interval. This interval excludes the null value of 0, also telling us that the $\beta_2$ parameter is significant, i.e. there is a significant relationship between income per capital and doctors availability.
+
+```{r}
+
+```
+
+# Task 6
+
+Use the model to predict the doctor availability per 100,000 residents given that the number of hospitals is 575 and the income per capita is 10.1 thousand dollars. Report and interpret a 95% confidence interval for the predicted value.
+
+```{r}
+
+```
+The predicted number of doctors available per 100,000 residents is 131.13. A 95% confidence interval for the predicted value is [68.127, 194.139]. For 95% of samples extracted from the population, the predicted number of doctors available will belong to the interval.
+
+# Task 7
+	
+```{r}
+
+```
+
+$R^2$ is 0.418. Therefore, 41.8% of the variance in the number of available doctors is “explained” by the annual per capita income and hospital availability.
+$R^2$ adjusted is 0.39, saying 39% of the variance in the number of available doctors is “explained” by the annual per capita income and hospital availability. This value should be used rather than the unadjusted $R^2$ as it adjusts for the number of predictors, and is better to use when we are comparing models with different numbers of predictors.

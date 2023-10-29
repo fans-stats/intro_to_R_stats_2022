@@ -1,0 +1,74 @@
+---
+title: "Lecture 7: Multiple Linear Regression - tasks"
+author: "Dr Nicolaas Puts and Dr Lucas França"
+date: "21 November 2022"
+output:
+  html_document:
+    df_print: paged
+  pdf_document: default
+editor_options: 
+  chunk_output_type: inline
+  markdown: 
+    wrap: 72
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(broom)
+```
+
+
+1. Load the following dataset:
+
+```{r}
+urlfile <- 'https://raw.githubusercontent.com/HeJasonL/BIG-TAC/main/TutorialData.csv' #this loads a csv file called TutorialData and puts it into urlfile
+
+data <- read.csv(urlfile) %>% 
+  tibble::as_tibble()
+data
+```
+
+2. We hypothesise that age and GABA levels predict sensory scores, verify that hypothesis.Write the model equation. Explain what each variable represents.
+
+```{r}
+data %>% 
+  lm(formula = Sensory1 ~ GABA) %>% 
+  summary()
+```
+
+
+3. Verify whether the residuals of the model are normally distributed.
+
+
+```{r}
+data %>% 
+  lm(formula = Sensory1 ~ GABA) %>% 
+  broom::augment() %>% 
+  
+  ggplot(aes(x = .std.resid)) + 
+    geom_histogram(binwidth = 0.5) + 
+    theme_bw()
+```
+
+
+4. Obtain the 95% CI for your model betas.
+
+```{r}
+data %>% 
+  lm(formula = Sensory1 ~ GABA) %>% 
+  confint()
+```
+
+
+5. Estimated the R squared for your model.
+
+```{r}
+data %>% 
+  lm(formula = Sensory1 ~ GABA) %>% 
+  summary()
+```
+

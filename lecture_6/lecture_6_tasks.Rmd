@@ -12,6 +12,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r}
 library(tidyverse)
 library(foreign)
+library(paletteer)
 ```
 
 
@@ -25,6 +26,9 @@ urlfile <- 'https://raw.githubusercontent.com/HeJasonL/BIG-TAC/main/TutorialData
 
 2. Create a for loop and write strings with a sequence of even numbers.
 
+
 3. Create a function to obtain the 95% CI for GABA.
 
+
 4. Create a boxplot for GABA (in each Group) with stats.
+

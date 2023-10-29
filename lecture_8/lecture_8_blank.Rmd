@@ -35,7 +35,6 @@ library(foreign)
 library(tidyverse)
 library(car) # Remember to install the package 'car' if you do not have it yet!
 library(gmodels) # Also install the package 'gmodels' if you do not have it!
-library(psych)
 library(ggpubr)
 library(broom)
 ```
